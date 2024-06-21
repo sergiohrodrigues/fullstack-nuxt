@@ -1,7 +1,12 @@
 <template>
     <div>
-        <AppHeader />
+        <!-- <AppHeader />
         <slot />
-        <AppFooter />
+        <AppFooter /> -->
+        <VApp>
+            <Main>
+                <slot />
+            </Main>
+        </VApp>
     </div>
 </template>

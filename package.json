@@ -20,7 +20,7 @@
   "devDependencies": {
     "prisma": "^5.15.1",
     "vite-plugin-vuetify": "^2.0.3",
-    "vuetify": "^3.6.7"
+    "vuetify": "^3.6.10"
   },
   "description": "Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.",
   "version": "1.0.0",
