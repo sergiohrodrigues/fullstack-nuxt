@@ -12,7 +12,17 @@ export default defineNuxtPlugin((app) => {
     blueprint: md2,
     components:{
         VCalendar
-    }
+    },
+    defaults: {
+      VBtn: {
+        color: 'primary',
+        variant: 'text',
+        rounded: true,
+      },
+    },
+    icons: {
+      defaultSet: 'mdi', // This is already the default value - only for display purposes
+    },
   })
   app.vueApp.use(vuetify)
 })

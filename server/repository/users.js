@@ -4,6 +4,14 @@ export const getUsers = async () => {
     return prisma.user.findMany()
 }
 
+export const getUser = async (id) => {
+    return prisma.user.findUnique({
+        where: {
+            id
+        }
+    })
+}
+
 export const createUser = async ({ name, email, password }) => {
 
     try {
