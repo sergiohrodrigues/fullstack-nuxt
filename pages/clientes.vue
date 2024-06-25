@@ -42,6 +42,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    layout: "alternative",
+})
+
 import ModalAddCliente from "~/components/ModalAddCliente.vue";
 import ModalCliente from "~/components/ModalCliente.vue";
 // const id = ref("")
@@ -66,24 +70,6 @@ import ModalCliente from "~/components/ModalCliente.vue";
 //         },
 //     ],
 // })
-
-// const submit = async () => {
-//     try {
-//         const { data } = await $fetch("/api/users/register", {
-//             method: "POST",
-//             body: {
-//                 name: name.value,
-//                 email: email.value,
-//                 password: password.value,
-//                 confirmPassword: confirmPassword.value
-//             }
-//         })
-
-//         id.value = data.id
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
 
 // const update = async () => {
 //     try {

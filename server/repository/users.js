@@ -5,9 +5,12 @@ export const getUsers = async () => {
 }
 
 export const getUser = async (id) => {
-    return prisma.user.findUnique({
+    return prisma.user.findFirst({
         where: {
-            id
+            email: id
+            // AND: {
+            //     password: password
+            // }
         }
     })
 }

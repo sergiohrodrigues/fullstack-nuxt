@@ -20,6 +20,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useDate } from 'vuetify'
+import { useRouter } from 'vue-router';
+
+definePageMeta({
+    layout: "default",
+})
+
+const router = useRouter();
+const logado = ref(false)
+
+if (!logado.value) {
+    router.push({ path: '/login' })
+}
 
 // Tipos
 interface Event {

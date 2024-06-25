@@ -4,6 +4,7 @@ export default defineEventHandler(async (event) => {
     const id = event.context.params.id;
 
     if (!id) {
+        console.log(id)
         return sendError(event, createError({
             statusCode: 406,
             statusMessage: 'ID obrigatório'
