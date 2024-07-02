@@ -21,12 +21,14 @@
 import { ref, onMounted } from 'vue'
 import { useDate } from 'vuetify'
 import { useRouter } from 'vue-router';
+// import { usuarioStore } from '~/stores/usuario';
 
 definePageMeta({
     layout: "default",
 })
 
 const router = useRouter();
+// const usuariostore = usuarioStore()
 const logado = ref(false)
 
 if (!logado.value) {

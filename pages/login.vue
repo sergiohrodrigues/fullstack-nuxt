@@ -99,11 +99,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
+// import { usuarioStore } from '~/stores/usuario'
 const router = useRouter()
 
 definePageMeta({
     layout: 'alternative'
 })
+
+const runtimeConfig = useRuntimeConfig()
+
+console.log(runtimeConfig.apiSecret)
+console.log(runtimeConfig.public.apiBase)
 
 const emailLogin = useField('emailLogin')
 const passwordLogin = useField('passwordLogin')
@@ -111,6 +117,8 @@ const msgErro = ref('')
 const erroLogin = ref(false)
 const loadingLogin = ref(false)
 const loginSucess = ref(false)
+
+// const usuariostore = usuarioStore()
 
 const usuario = ref('')
 
@@ -140,6 +148,8 @@ async function singIn() {
                 loadingLogin.value = false
                 loginSucesss(data.name)
             }, 3000)
+
+            // usuariostore.USUARIO_LOGADO(true)
 
             emailLogin.value.value = undefined
             passwordLogin.value.value = undefined
