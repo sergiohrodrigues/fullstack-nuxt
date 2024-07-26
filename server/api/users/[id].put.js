@@ -1,4 +1,4 @@
-import { updateUser } from "~/server/repository/users";
+// import { updateUser } from "~/server/repository/users";
 
 export default defineEventHandler(async (event) => {
     const id = event.context.params.id;
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
         }))
     }
 
-    const data = await updateUser(id, { name, email })
+    // const data = await updateUser(id, { name, email })
 
     return {
         sucess: true,

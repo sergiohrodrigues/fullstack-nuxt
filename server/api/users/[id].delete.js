@@ -1,4 +1,4 @@
-import { deleteUser } from "~/server/repository/users";
+// import { deleteUser } from "~/server/repository/users";
 
 export default defineEventHandler(async (event) => {
     const id = event.context.params.id;
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
         }))
     }
 
-    await deleteUser(id)
+    // await deleteUser(id)
 
     return {
         sucess: true,
