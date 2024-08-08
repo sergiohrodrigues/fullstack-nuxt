@@ -1,5 +1,6 @@
 <template>
   <div
+    class="relative"
     style="
       height: 100vh;
       display: flex;
@@ -8,8 +9,13 @@
       justify-content: center;
     "
   >
-    <!-- <v-img class="mx-auto my-6" style="max-height: 0;"
-            src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"></v-img> -->
+    <v-alert
+      v-if="alertCadastro"
+      closable
+      style="position: absolute; top: 1rem"
+      :title="titleAlert"
+      :type="typeAlert"
+    ></v-alert>
 
     <v-card
       class="mx-auto pa-12 pb-8"
@@ -165,7 +171,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useField, useForm } from "vee-validate";
-// import { usuarioStore } from '~/stores/usuario'
 const router = useRouter();
 
 definePageMeta({
@@ -174,9 +179,6 @@ definePageMeta({
 
 const runtimeConfig = useRuntimeConfig();
 
-console.log(runtimeConfig.apiSecret);
-console.log(runtimeConfig.public.apiBase);
-
 const emailLogin = useField("emailLogin");
 const passwordLogin = useField("passwordLogin");
 const msgErro = ref("");
@@ -184,101 +186,94 @@ const erroLogin = ref(false);
 const loadingLogin = ref(false);
 const loginSucess = ref(false);
 
+const alertCadastro = ref(false);
+const titleAlert = ref("");
+const typeAlert = ref("");
+
+const logado = ref(false);
+
 // const usuariostore = usuarioStore()
 
 const usuario = ref("");
 
+const msgAlerta = (
+  alerta: boolean,
+  title: string,
+  type: string,
+  time: number = 4000
+) => {
+  alertCadastro.value = alerta;
+  titleAlert.value = title;
+  typeAlert.value = type;
+
+  setTimeout(() => {
+    alertCadastro.value = false;
+  }, time);
+};
+
+function validEmail(email: string) {
+  return /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/.test(email);
+}
+
 const singIn = async (values) => {
+  if (emailLogin.value.value === undefined || emailLogin.value.value === "") {
+    erroMomentanio("Email obrigatório");
+    return;
+  }
+
+  if (!validEmail(emailLogin.value.value)) {
+    erroMomentanio("Email inválido");
+    return;
+  }
+
+  if (
+    passwordLogin.value.value === undefined ||
+    passwordLogin.value.value === ""
+  ) {
+    erroMomentanio("Senha obrigatória");
+    return;
+  }
+
   try {
     await $fetch("/api/users/login", {
       method: "POST",
       body: {
-        email: email.value.value,
-        password: password.value.value,
+        email: emailLogin.value.value,
+        password: passwordLogin.value.value,
       },
     })
       .then(() => {
-        alert("Cadastrado com sucesso");
+        msgAlerta(true, "Logado com sucesso", "success");
+
+        emailLogin.value.value = "";
+        passwordLogin.value.value = "";
+
+        router.push("/");
+
+        logado.value = true;
+
+        sessionStorage.setItem("logado", logado.value);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.status === 404) {
+          msgAlerta(
+            true,
+            "E-mail não encontrado, por favor se cadastre",
+            "warning"
+          );
+
+          singUp.value = true;
+        }
+
+        if (error.status === 403) {
+          msgAlerta(true, "Usuário ou senha inválida", "warning");
+        }
       });
   } catch (error) {
     console.log("erro catch");
     console.log(error);
   }
 };
-
-async function singIn2() {
-  if (emailLogin.value.value === undefined) {
-    erroMomentanio("Email obrigatório");
-    return;
-  }
-
-  if (passwordLogin.value.value === undefined) {
-    erroMomentanio("Senha obrigatória");
-    return;
-  }
-
-  console.log(emailLogin.value.value, passwordLogin.value.value);
-
-  fetch("/api/users/login", {
-    method: "POST",
-    body: {
-      email: emailLogin.value.value,
-      password: passwordLogin.value.value,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  // try {
-  //   const { data } = await $fetch("/api/users/login", {
-  //     method: "POST",
-  //     body: {
-  //       email: email.value.value,
-  //       password: password.value.value,
-  //     },
-  //   });
-
-  //   console.log(data);
-  // } catch (error) {
-  //   console.log(error);
-  // }
-
-  // if (data.password === passwordLogin.value.value) {
-  //   // router.push({ path: '/' })
-  //   loadingLogin.value = true;
-  //   setTimeout(() => {
-  //     loadingLogin.value = false;
-  //     loginSucesss(data.name);
-  //   }, 3000);
-
-  //   // usuariostore.USUARIO_LOGADO(true)
-
-  //   emailLogin.value.value = undefined;
-  //   passwordLogin.value.value = undefined;
-  // } else {
-  //   loadingLogin.value = true;
-  //   setTimeout(() => {
-  //     loadingLogin.value = false;
-  //     erroMomentanio("Email ou senha incorretos");
-  //   }, 3000);
-  // }
-}
-
-function loginSucesss(name: string) {
-  loginSucess.value = true;
-  usuario.value = name;
-  setTimeout(() => {
-    loginSucess.value = false;
-  }, 5000);
-}
 
 function erroMomentanio(msg: string) {
   msgErro.value = msg;
@@ -337,16 +332,15 @@ const submit = handleSubmit(async (values) => {
       },
     })
       .then(() => {
-        alert("Cadastrado com sucesso");
         handleReset();
-
         singUp.value = false;
+        msgAlerta(true, "Cadastrado com sucesso", "success");
       })
       .catch((error) => {
         if (error.status === 406) {
-          alert("Email ja cadastrado");
+          msgAlerta(true, "Email ja cadastrado, tente outro", "warning");
         } else {
-          alert("Erro ao gravar usuario, por favor tente mais tarde");
+          msgAlerta(true, "Erro, por favor tente mais tarde.", "error");
         }
       });
   } catch (error) {
